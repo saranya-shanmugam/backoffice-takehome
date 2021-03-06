@@ -45,18 +45,34 @@ CREATE TABLE IF NOT EXISTS takeHome.users (
   mobile_number VARCHAR(20) NULL,
   fax_number VARCHAR(20) NULL,
   active BOOLEAN NOT NULL,
-  department_id BIGINT NULL,
   PRIMARY KEY (id),
   CONSTRAINT fk_users_customers1
     FOREIGN KEY (customer_id)
     REFERENCES takeHome.customers (id)
+    ON DELETE CASCADE);
+
+CREATE INDEX IF NOT EXISTS fk_users_customers1_idx ON takeHome.users (customer_id ASC);
+
+-- -----------------------------------------------------
+-- Table takeHome.user_department_association
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS takeHome.user_department_association (
+  id BIGINT NOT NULL IDENTITY,
+  user_id BIGINT NOT NULL,
+  department_id BIGINT NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT fk_user_department_association_users1
+    FOREIGN KEY (user_id)
+    REFERENCES takeHome.users (id)
     ON DELETE CASCADE,
-  CONSTRAINT fk_users_departments1
+  CONSTRAINT fk_user_department_association_departments1
     FOREIGN KEY (department_id)
     REFERENCES takeHome.departments (id)
     ON DELETE CASCADE);
 
-CREATE INDEX IF NOT EXISTS fk_users_customers1_idx ON takeHome.users (customer_id ASC);
-CREATE INDEX IF NOT EXISTS fk_users_departments1_idx ON takeHome.users (department_id ASC);
+CREATE INDEX IF NOT EXISTS fk_user_department_association_users1_idx
+    ON takeHome.user_department_association (user_id ASC);
+CREATE INDEX IF NOT EXISTS fk_user_department_association_departments1_idx
+    ON takeHome.user_department_association (department_id ASC);
 
 commit;
